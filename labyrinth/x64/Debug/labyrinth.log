@@ -1,35 +1,31 @@
 ﻿  labyrinth.cpp
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\Player.h(68,22): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\Player.h(69,22): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(211,30): warning C4244: “=”: 从“ULONGLONG”转换到“unsigned long”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(224,39): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(226,39): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(238,40): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(246,24): warning C4244: “初始化”: 从“ULONGLONG”转换到“unsigned long”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(263,38): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(265,38): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(273,101): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(273,79): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(273,57): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(273,36): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(276,40): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(276,20): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(277,82): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(277,35): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(285,19): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(286,19): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(316,28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(317,28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(351,28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(352,28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(385,19): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(404,24): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(423,43): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(423,24): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(424,30): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(424,22): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(439,25): warning C4244: “=”: 从“ULONGLONG”转换到“unsigned long”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(591,43): warning C4244: “=”: 从“ULONGLONG”转换到“unsigned long”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(694,60): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\labyrinth\labyrinth.cpp(694,26): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-  labyrinth.vcxproj -> C:\留档\3Dlabyrinth\labyrinth\raycasting3D-labyrinth\x64\Debug\labyrinth.exe
+E:\ProJect\CPP_homework\labyrinth\Player.h(68,22): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Player.h(69,22): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(96,57): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(96,24): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(204,28): warning C4244: “初始化”: 从“ULONGLONG”转换到“unsigned long”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(221,42): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(223,42): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(298,113): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(298,89): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(298,65): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(298,41): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(301,45): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(301,25): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(302,90): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(302,40): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(310,23): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(311,23): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(341,32): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(342,32): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(376,32): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(377,32): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(410,28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(429,28): warning C4244: “初始化”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(448,49): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(448,29): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(449,37): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\Scene.h(449,27): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\labyrinth.cpp(140,25): warning C4244: “=”: 从“ULONGLONG”转换到“unsigned long”，可能丢失数据
+E:\ProJect\CPP_homework\labyrinth\labyrinth.cpp(287,43): warning C4244: “=”: 从“ULONGLONG”转换到“unsigned long”，可能丢失数据
+  labyrinth.vcxproj -> E:\ProJect\CPP_homework\x64\Debug\labyrinth.exe
