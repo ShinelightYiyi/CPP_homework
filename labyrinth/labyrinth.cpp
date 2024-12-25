@@ -25,7 +25,7 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 WPARAM downKey = 0;
 WPARAM upKey = 0;
-Player player1(20,20);
+Player player1(15,37);
 
 bool Wkey = false;
 bool Akey = false;
@@ -33,7 +33,9 @@ bool Skey = false;
 bool Dkey = false;
 bool Rkey = false;
 
-int mapSize =6;
+int mapSize = 6;
+
+bool Mflag = true;
 
 
 extern unsigned long time0;
@@ -41,12 +43,13 @@ extern WCHAR str[20];
 extern int mapkindX;
 extern int mapkindY;
 extern int mapkind;
-
+POINT temCursorPos= {950,0};
 
 int count = 0;
 unsigned long tolTime = 0;
 
 Scene* gameScene = nullptr;
+Scene* gameOverScene1 = nullptr; 
 SceneManager* sceneManager = nullptr;
 
 
@@ -55,12 +58,9 @@ const int WINDOW_HEIGHT = 900;
 
 bool win = false;
 
-Map worldMap(200,200);
+Map worldMap(100,100);
 
 
-
-
-BlinkyGhost blinky(10,10,&player1,&worldMap,"G1");
 //
 //int worldMap[mapWidth][mapHeight] =
 //{
@@ -108,23 +108,42 @@ BlinkyGhost blinky(10,10,&player1,&worldMap,"G1");
 
 void SetMap()
 {
-    for (int i = 0; i < 200; i++)
+    std::ifstream inflie;
+    inflie.open("map1.prn", std::ios::in);
+    /*if (!inflie.is_open())
     {
-        for (int j = 0; j < 200; j++)
-        {
-            if (i == 0 || i == 200 - 1 || j == 0 || j == 200 - 1)
-                worldMap.grid[i][j] = 1;
-        }
-    }
+        std::cout << "open file failed" << std::endl;
+		for (int i = 0; i < 100; i++)
+		{
+			for (int j = 0; j < 100; j++)
+			{aaaaaaaa
+				if (i == 0 || i == 100 - 1 || j == 0 || j == 100 - 1)
+					worldMap.grid[i][j] = 1;
+			}
+		}
 
-    for (int i = 0; i < 200; i++)
-    {
-        for (int j = 0; j < 200; j++)
-        {
-            if (i%5==1 && j%5==1)
-                worldMap.grid[i][j] = 8;
-        }
+		for (int i = 0; i < 100; i++)
+		{
+			for (int j = 0; j < 100; j++)
+			{
+				if (i % 5 == 1 && j % 5 == 1)
+					worldMap.grid[i][j] = 8;
+			}
+		}
     }
+    else
+    {*/
+        std::cout << "open file success" << std::endl;
+        for (int i = 0; i < 100; i++)
+        {
+            for (int j = 0; j < 100; j++)
+            {
+                inflie >> worldMap.grid[i][j];
+                
+            }
+        }
+
+    
 }
 
 #pragma region 初始化窗口
@@ -140,8 +159,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
   time0 = GetTickCount64();
     // 初始化全局字符串
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_LABYRINTH, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance);
+    LoadStringW(hInstance, IDC_LABYRINTH, szWindowClass, MAX_LOADSTRING); 
+    MyRegisterClass(hInstance); 
+
 
     // 执行应用程序初始化:
     if (!InitInstance (hInstance, nCmdShow))
@@ -246,12 +266,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
 	case WM_CREATE:  //初始化  
     {
-
+        PostMessage(hWnd, WM_INPUTLANGCHANGEREQUEST, 0, (LPARAM)0x0409);
         gameScene = new GameScene(player1, worldMap, mapSize);
+
         sceneManager = new SceneManager();
 
         sceneManager->SetCurrentScene(gameScene);
-
+        sceneManager->CreateGhost();
+        //ShowCursor(FALSE);
         SetMap();
         // 在窗口创建时启动定时器
         SetTimer(hWnd, 1, 1000 / 30, NULL);
@@ -263,21 +285,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_TIMER:  //主循环
 		// 处理定时器消息，重绘窗口
+            
 		if (wParam == 1) 
         {
 #pragma region GameSceneUp
 
 #pragma endregion
 
-            InvalidateRect(hWnd, NULL, FALSE);
 
+            InvalidateRect(hWnd, NULL, FALSE);
+            
             sceneManager->Update();
 
-            if (win)
+            if (player1.isDead)
             {
+                KillTimer(hWnd, 1);
+                gameOverScene1 = new gameOverScene(player1);
+                sceneManager->SetCurrentScene(gameOverScene1);
                 if (Rkey)
                 {
-                    KillTimer(hWnd, 1);
+                    
                     SetTimer(hWnd, 1, 1000 / 30, NULL);
                     player1.playerX = 10;
                     player1.playerY = 10;
@@ -289,6 +316,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
 		}
 		break;
+
+        case WM_MOUSEMOVE:
+        {
+
+            POINT cursorPos;
+            
+            GetCursorPos(&cursorPos); // 获取鼠标的位置（屏幕坐标）
+
+            // 将屏幕坐标转换为窗口客户区坐标
+            ScreenToClient(hWnd, &cursorPos);
+            if (cursorPos.x <= 300|| cursorPos.x >= 1300)
+            {
+                POINT point;
+                point.x = 950;
+                point.y = cursorPos.y;
+                ClientToScreen(hWnd, &point);
+                SetCursorPos(point.x, point.y);
+                temCursorPos.x = 950;
+            }
+            else
+            { 
+                player1.playerAngle -= (cursorPos.x - temCursorPos.x) / 700.0f;
+                temCursorPos.x = cursorPos.x;
+            }           
+            
+            
+            break;
+
+           
+        }
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -306,6 +363,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
     case WM_KEYDOWN:
     { 
         downKey = wParam;  //传入输入信息
@@ -335,18 +393,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HBITMAP hbmMem = CreateCompatibleBitmap(hdc,1600, 900);
             HBITMAP hbmOld = (HBITMAP)SelectObject(hdcMem, hbmMem);
             //==============================================================================
-
             sceneManager->Draw(hdcMem, clientRect, time0);
-
-            if (!win) //游戏场景
-            {
-
-            }
-            
-            if (win) 
-            {
-
-            }
             //==============================================================================
             BitBlt(hdc, 0, 0, 1600,900, hdcMem, 0, 0, SRCCOPY);
             SelectObject(hdcMem, hbmOld);

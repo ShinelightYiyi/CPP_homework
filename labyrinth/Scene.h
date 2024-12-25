@@ -6,17 +6,19 @@
 #include <array>
 #include <windows.h>
 #include <algorithm>  
+#include <memory> 
 
  int mapkindX = 0;
  int mapkindY = 0;
  int mapkind = 0;
  unsigned long time0;
+ int PAcount = 0;
 
  WCHAR str[20];
 
 enum SceneType
 {
-	TheGameScene,TheMainMnue,TheWinScene
+	TheGameScene,TheMainMnue, TheGameOverScene
 };
 
 
@@ -47,8 +49,35 @@ public:
     {
 
     }
+    virtual void CreateGhost()
+    {
+
+    }
 };  
 
+class gameOverScene : public Scene
+{
+    public:
+    Player& player;
+    gameOverScene(Player& p) : player(p) {}
+    void Draw(HDC hdcMem, RECT& clientRect, unsigned long time0) override
+    {
+        SetBkColor(hdcMem, RGB(0, 0, 0));
+        SetTextColor(hdcMem, RGB(255, 255, 255));
+        LOGFONT lf;
+        memset(&lf, 0, sizeof(LOGFONT));
+        lf.lfHeight = 100;
+        lf.lfWeight = FW_BOLD;
+        wcscpy_s(lf.lfFaceName, 20, L"Microsoft YaHei");
+        HFONT hFont = CreateFontIndirect(&lf);
+        HFONT hOldFont = (HFONT)SelectObject(hdcMem, hFont);
+        swprintf(str, 20, L"得分 :%d", player.score);
+        TextOut(hdcMem, clientRect.left + 400, clientRect.top + 100, L"Game Over", 9);
+        TextOut(hdcMem, clientRect.left + 400, clientRect.top + 300, L"按下R键重新开始", 8);
+        TextOut(hdcMem, clientRect.left + 400, clientRect.top + 600, str, wcslen(str));
+    }
+
+};
 
 
 
@@ -57,17 +86,31 @@ class GameScene : public Scene
 {
 public:
 	Player& player;
+    Player* player1=&player;
 	Map& map;
+    Map* map1=&map;
 	int mapSize;
-
+    std::vector<std::unique_ptr<BlinkyGhost>> ghosts;
     GameScene(Player& p,Map& m ,int size) : player(p),map(m),mapSize(size) {}
+
+    void CreateGhost()
+    {
+        
+        for (int i = 0; i < 100; i++)
+        {
+            for (int j = 0; j < 100; j++)
+            {
+                if (map.grid[i][j] == 3)
+                {
+                    ghosts.emplace_back(std::make_unique<BlinkyGhost>(i, j, player1, map1,"Blinky"));
+                }
+            }
+        }
+    }
 
 	void Update() override
 	{
-		if (map.grid[(int)floor(player.playerY / 7)][(int)floor(player.playerX / 7)])
-		{
-			//win = true;
-		}
+
 
 		if (Wkey)
 		{
@@ -76,17 +119,34 @@ public:
 		}
 		if (Akey)
 		{
-			player.playerAngle += 0.05;
+            player.playerDir2 = 1;
+            updatePlayerAD(player.playerX, player.playerY);
+			//player.playerAngle += 0.05;
 		}
 		if (Dkey)
 		{
-			player.playerAngle += -0.05;
+            player.playerDir2 = -1;
+            updatePlayerAD(player.playerX, player.playerY);
+			//player.playerAngle += -0.05;
 		}
 		if (Skey)
 		{
 			player.playerDir = -1;
 			updatePlayer(player.playerX, player.playerY);
 		}
+        player.Update();
+        Gcount++;
+        if(Gcount==10)
+		{
+			for (auto& BlinkyGhost : ghosts)
+			{
+				BlinkyGhost->Update();
+
+            }
+            Gcount = 0;
+        }
+        
+        
 	}
 
 
@@ -99,6 +159,32 @@ public:
 		player.CheckCollision(&map);
 		//wwwwwwblinky.Update();
 		drawTime(hdcMem, time0);
+        for (auto& BlinkyGhost : ghosts)
+        {
+            BlinkyGhost->Draw(hdcMem);
+        }
+        if (player.scoreUp)
+        {
+            LOGFONT lf;
+            memset(&lf, 0, sizeof(LOGFONT));
+            lf.lfHeight = 50;
+            lf.lfWeight = FW_BOLD;
+            wcscpy_s(lf.lfFaceName, 20, L"Microsoft YaHei");
+            HFONT hFont = CreateFontIndirect(&lf);
+            HFONT hOldFont = (HFONT)SelectObject(hdcMem, hFont);
+            COLORREF color = RGB(230, 140, 35); 
+            SetTextColor(hdcMem, color);
+            swprintf(str, 20, L"得分+1");
+            TextOut(hdcMem, 850+PAcount*5, 430-PAcount*15, str, wcslen(str));
+            SelectObject(hdcMem, hOldFont);
+            DeleteObject(hFont);
+            PAcount++;
+            if (PAcount == 10)
+            {
+                player.scoreUp = false;
+                PAcount = 0;
+            }
+        }
 	}  
 
 
@@ -179,10 +265,25 @@ private:
 	bool Dkey = false;
 	bool Rkey = false;
 
+
+    int Gcount = 0;
     WPARAM downKey = 0;
     WPARAM upKey = 0;
+    double Pi = 3.14159265358979323846;
 
+    std::array<double, 2> updatePlayerAD(double& playerX, double& playerY)
+    {
+        player.playerDeltaX = sin(player.playerAngle+Pi/2) * player.speed * player.playerDir2;
+        player.playerDeltaY = cos(player.playerAngle+Pi/2) * player.speed * player.playerDir2;
+        //撞墙判断
+        if (map.grid[(int)floor(playerY / mapSize)][(int)floor((playerX + player.playerDeltaX) / mapSize)] != 1)
+            player.playerX += player.playerDeltaX;
+        if (map.grid[(int)floor((playerY + player.playerDeltaY) / mapSize)][(int)floor(playerX / mapSize)] != 1)
+            player.playerY += player.playerDeltaY;
 
+        std::array<double, 2> position = { playerX, playerY };
+        return position;
+    }
 
 	std::array<double, 2> updatePlayer(double& playerX, double& playerY)
 	{
@@ -201,6 +302,7 @@ private:
 
     void drawTime(HDC hdc, unsigned long time0)
     {
+        
         unsigned long time = GetTickCount64() - time0;
         unsigned long tolSec = time / 1000;
         int min = tolSec / 60;
@@ -233,15 +335,15 @@ private:
 
 
 
-        map.grid[12][1] = 3;
+        //map.grid[12][1] = 3;
 
         HBRUSH hBrush3 = CreateSolidBrush(RGB(230, 240, 250));
         HBRUSH hBrush4 = CreateSolidBrush(RGB(90, 80, 70));
         HBRUSH hBrush5 = CreateSolidBrush(RGB(150, 220, 90));
         SelectObject(hdc, hBrush3);
-        Rectangle(hdc, 300, 0, 1600, 450);
+        Rectangle(hdc, 298, 0, 1600, 450);
         SelectObject(hdc, hBrush4);
-        Rectangle(hdc, 300, 450, 1600, 900);
+        Rectangle(hdc, 298, 450, 1600, 900);
 
         /* int temX, temY;
          if(player1.playerX-5 >= 0&& player1.playerX+5 < mapHeight)
@@ -293,14 +395,14 @@ private:
 
     void drawMapPlayer(HDC hdc)
     {
-        HBRUSH hBrush1 = CreateSolidBrush(RGB(255, 120, 150));
+        /*HBRUSH hBrush1 = CreateSolidBrush(RGB(255, 120, 150));
         SelectObject(hdc, hBrush1);
-        Ellipse(hdc, 5 + player.playerX - 3, 5 + player.playerY - 3, 5 + player.playerX + 3, 5 + player.playerY + 3);
+        Ellipse(hdc, 5 + player.playerX/mapSize - 3, 5 + player.playerY/mapSize - 3, 5 + player.playerX/mapSize + 3, 5 + player.playerY/mapSize + 3);
         HPEN hPen = CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
         HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
-        MoveToEx(hdc, 5 + player.playerX, 5 + player.playerY, NULL);
-        LineTo(hdc, 5 + player.playerX + sin(player.playerAngle) * 8, 5 + player.playerY + cos(player.playerAngle) * 8);
-        DeleteObject(hPen);
+        MoveToEx(hdc, 5 + player.playerX/mapSize, 5 + player.playerY/mapSize, NULL);
+        LineTo(hdc, 5 + player.playerX/mapSize + sin(player.playerAngle) * 8, 5 + player.playerY/mapSize + cos(player.playerAngle) * 8);
+        DeleteObject(hPen);*/
     }
 
     void drawRay(HDC hdc)
@@ -309,6 +411,7 @@ private:
         //玩家位置向下取整为mapSize的倍数
         int rayStartX = floor(player.playerX / mapSize) * mapSize;
         int rayStartY = floor(player.playerY / mapSize) * mapSize;
+        bool haveS = false;
 
         for (int i = 0; i < 1300; i++)
         {
@@ -342,17 +445,17 @@ private:
                 int mapTargetY = floor(rayEndY / mapSize);
                 if (currentSin <= 0)
                     mapTargetX += rayDirX;
-                if (mapTargetY < 0 || mapTargetY > 199)
+                if (mapTargetY < 0 || mapTargetY > 99)
                 {
                     mapkindX = 1;
                     break;
                 }
-                if (mapTargetX < 0 || mapTargetX > 199)
+                if (mapTargetX < 0 || mapTargetX > 99)
                 {
                     mapkindX = 1;
                     break;
                 }
-                if (map.grid[mapTargetY][mapTargetX] != 0)
+                if (map.grid[mapTargetY][mapTargetX] == 1)
                 {
                     mapkindX = 1;
                     break;
@@ -360,6 +463,11 @@ private:
                 if (map.grid[mapTargetY][mapTargetX] == 8)
                 {
                     mapkindX = 8;
+                    break;
+                }
+                if (map.grid[mapTargetY][mapTargetX] == 3)
+                {
+                    mapkindX = 3;
                     break;
                 }
                 rayEndX += rayDirX * mapSize;
@@ -377,12 +485,12 @@ private:
                 int mapTargetY = floor(rayEndY / mapSize);
                 if (currentCos <= 0)
                     mapTargetY += rayDirY;
-                if (mapTargetY < 0 || mapTargetY > 199)
+                if (mapTargetY < 0 || mapTargetY > 99)
                 {
                     mapkindY = 1;
                     break;
                 }
-                if (mapTargetX < 0 || mapTargetX > 199)
+                if (mapTargetX < 0 || mapTargetX > 99)
                 {
                     mapkindY = 1;
                     break;
@@ -395,6 +503,12 @@ private:
                 if (map.grid[mapTargetY][mapTargetX] == 8)
                 {
                     mapkindY = 8;
+
+                    break;
+                }
+                if (map.grid[mapTargetY][mapTargetX] == 3)
+                {
+                    mapkindY = 3;
                     break;
                 }
                 rayEndY += rayDirY * mapSize;
@@ -402,6 +516,7 @@ private:
             double depth = verticalDepth < horizontalDepth ? verticalDepth : horizontalDepth;
             double endX = verticalDepth < horizontalDepth ? tempX : rayEndX;
             double endY = verticalDepth < horizontalDepth ? tempY : rayEndY;
+            unsigned long time1=(((GetTickCount64() - time0) /100)%6);
             mapkind = verticalDepth < horizontalDepth ? mapkindX : mapkindY;
             //=========================================================================
             if (mapkind == 1)
@@ -423,6 +538,35 @@ private:
                 mapkindY = 0;
             }
 
+            if (mapkind == 3)
+            {
+                depth *= cos(player.playerAngle - currentAngle);
+                int height = 8000 / (depth + 0.001);
+                HPEN hPen5 = CreatePen(PS_SOLID, 2, RGB(238, 125, 117));
+                HPEN hPen6 = CreatePen(PS_SOLID, 2, RGB(208, 90, 80));
+                HPEN hPen7 = CreatePen(PS_SOLID, 2, RGB(230, 90, 80));
+                HPEN hPen8 = CreatePen(PS_SOLID, 2, RGB(185, 70, 50));
+                if (verticalDepth < horizontalDepth)
+                    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen5);
+                else
+                    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen6);
+                MoveToEx(hdc, i + 300, 450 - (18*height / (36-time1)), NULL);
+                LineTo(hdc, i + 300, 450 + (18*height / (36-time1)));
+                if (verticalDepth < horizontalDepth)
+                    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen7);
+                else
+                    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen8);
+                MoveToEx(hdc, i + 300, 450 - (3 * height / (36 - time1)), NULL);
+                LineTo(hdc, i + 300, 450 + (3 * height / (36 - time1)));
+                DeleteObject(hPen5);
+                DeleteObject(hPen6);
+                DeleteObject(hPen7);
+                DeleteObject(hPen8);
+                mapkind = 0;
+                mapkindX = 0;
+                mapkindY = 0;
+            }
+
             if (mapkind == 8)
             {
                 depth *= cos(player.playerAngle - currentAngle);
@@ -433,8 +577,8 @@ private:
                     HPEN hOldPen = (HPEN)SelectObject(hdc, hPen3);
                 else
                     HPEN hOldPen = (HPEN)SelectObject(hdc, hPen4);
-                MoveToEx(hdc, i + 300, 450 - height / 2, NULL);
-                LineTo(hdc, i + 300, 450 + height / 2);
+                MoveToEx(hdc, i + 300, (450 - height / 2), NULL);
+                LineTo(hdc, i + 300,(450 +  height /2));
                 DeleteObject(hPen3);
                 DeleteObject(hPen4);
                 mapkind = 0;
@@ -443,11 +587,11 @@ private:
             }
             //===========================================================================
 
-            HPEN hPen = CreatePen(PS_SOLID, 2, RGB(100, 150, 50));
+            /*HPEN hPen = CreatePen(PS_SOLID, 2, RGB(100, 150, 50));
             HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
-            MoveToEx(hdc, 5 + player.playerX, 5 + player.playerY, NULL);
-            LineTo(hdc, 5 + endX, 5 + endY);
-            DeleteObject(hPen);
+            MoveToEx(hdc, 5 + player.playerX/mapSize, 5 + player.playerY/mapSize, NULL);
+            LineTo(hdc, 5 + endX/mapSize, 5 + endY/mapSize);
+            DeleteObject(hPen);*/
             currentAngle -= 1.0466 / 1300;
         }
     }

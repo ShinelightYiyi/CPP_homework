@@ -7,6 +7,7 @@
 #include<iostream>
 #include<memory>
 #include"Player.h"
+#include <fstream>
 
 
 
@@ -16,6 +17,7 @@ public:
     std::vector<std::vector<int>> grid;
     std::vector<std::vector<int>> scoreGrid;
     int width, height;
+
 
     Map(int w, int h) : width(w), height(h) 
     {
@@ -39,7 +41,7 @@ public:
         }
     }
 
-
+    
     /// <summary>
     /// 设置分数地图(分数的位置)
     /// </summary>

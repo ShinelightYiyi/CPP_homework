@@ -23,7 +23,7 @@ public:
 
     int distanceTo(const Vector2& other) const 
     {
-        return std::abs(x - other.x) + std::abs(y - other.y);
+        return std::abs(x - other.x/6) + std::abs(y - other.y/6);
     }
 
     // 向量加法

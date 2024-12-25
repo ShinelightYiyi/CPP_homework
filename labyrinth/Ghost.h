@@ -15,8 +15,8 @@ enum GhostState
 };
 
 
-#define mapWidth 300
-#define mapHeight 300
+#define mapWidth 100
+#define mapHeight 100
 
 class Ghost
 {
@@ -38,6 +38,7 @@ public:
 
     std::vector<Vector2> aStar(Vector2 start, Vector2 goal)
     {
+        int index = 0;
         struct Node
         {
             Vector2 position;
@@ -63,6 +64,12 @@ public:
 
         while (!openSet.empty())
         {
+            index++;
+            if (index > 20000)
+            {
+                std::cout << "A*算法超时" << std::endl;
+                return {};
+            }
             Node* currentNode = openSet.top();
             openSet.pop();
 
@@ -76,6 +83,7 @@ public:
                 }
                 std::reverse(path.begin(), path.end());
                 return path;
+                index = 0;
             }
 
             // 将当前节点加入关闭列表
@@ -103,7 +111,6 @@ public:
 
         return {};  // 如果没有找到路径，返回空
     }
-
 
     /// <summary>
     /// 为true时，追击玩家，为false时，逃离玩家
@@ -160,20 +167,56 @@ public:
     {
         state = GhostState::Attack;
     }
+    int dist=100;
 
     void Update() override
     {
-        map->Clear(position);
-        std::vector<Vector2> path = aStar(position, player->position);
-        if (!path.empty())
+        dist = abs(position.x - player->position.y/6)+abs(position.y - player->position.x/6);
+       // player->score = dist;    
+        if (dist <= 20)
         {
-            position = path[1];  // 只走第一步
+			Vector2 target( player->position.y / 6 ,player->position.x / 6);
+
+			if (position == target)
+			{
+                target.x -= 1;
+                player->die();
+			}
+
+			map->grid[position.x][position.y] = 0;
+			
+           
+			std::vector<Vector2> path = aStar(position, target);
+			if (!path.empty())
+			{
+				position = path[1];  // 只走第一步
+				// player->score++;
+			}
+			map->grid[position.x][position.y] = 3;
         }
-        map->DrawPlayer(position.x,position.y, 3);
-        CheckCollision();  // 检查是否与玩家碰撞
-
-    //    std::cout << "Ghost Position is " << position.x << " " << position.y << std::endl;
-
+    }
+    void Draw(HDC hdc)
+    {
+       WCHAR str[30];
+        /*swprintf_s(str, 30, L"G:(%d,%d) P:(%d,%d) ", position.y, position.x, player->position.x / 6, player->position.y / 6);
+        TextOut(hdc, 50, 300, str, wcslen(str));*/
+        if (dist <= 15)
+        {
+            LOGFONT lf;
+            memset(&lf, 0, sizeof(LOGFONT));
+            lf.lfHeight = 40;
+            lf.lfWeight = FW_BOLD;
+            wcscpy_s(lf.lfFaceName, 20, L"Microsoft YaHei");
+            HFONT hFont = CreateFontIndirect(&lf);
+            HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
+            COLORREF color = RGB(200, 0, 0);
+            SetTextColor(hdc, color);
+			swprintf_s(str, 30, L"%d米范围内有怪物", dist);
+			TextOut(hdc, 30, 100, str, wcslen(str));
+            SelectObject(hdc, hOldFont);
+            DeleteObject(hFont);
+        }
+        
     }
 
 

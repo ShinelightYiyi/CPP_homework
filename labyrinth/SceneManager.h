@@ -8,6 +8,10 @@ class SceneManager
 public:
 	Scene* currentScene;
 
+	void CreateGhost()
+	{
+		currentScene->CreateGhost();
+	}
 
 	void Update()
 	{
@@ -40,7 +44,7 @@ public:
 		{
 		case SceneType::TheGameScene: currentScene = gameScene; break;
 		case SceneType::TheMainMnue: break;
-		case SceneType::TheWinScene: break;
+		case SceneType::TheGameOverScene:  break;
 		}
 	}
 

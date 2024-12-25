@@ -17,8 +17,9 @@ public:
 	/// </summary>
     
     int playerDir = 0;
-    double playerAngle = -1;
-    double speed = 1;
+    int playerDir2 = 0;
+    double playerAngle = -1.5;
+    double speed = 0.8;
 
     double playerDeltaX = 0;
     double playerDeltaY = cos(playerAngle) * speed;
@@ -28,6 +29,7 @@ public:
     Vector2 position;
 
 	bool isDead;
+    bool scoreUp=false;
     PlayerFlip flip;
 
     int score;
@@ -52,7 +54,7 @@ public:
         {
             score++;
             map->grid[(int)floor(playerY / 6)][(int)floor((playerX + playerDeltaX) / 6)] = 0;
-            std::cout << "分数加一" << std::endl;
+            scoreUp = true;
         }
     }
 
@@ -63,7 +65,7 @@ public:
 
 
 
-    void Update(int deltaTime)
+    void Update()
     {
         position.x = playerX;
         position.y = playerY;

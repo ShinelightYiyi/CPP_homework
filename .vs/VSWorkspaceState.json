@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\labyrinth",
+    "\\labyrinth\\x64",
+    "\\x64"
   ],
+  "SelectedNode": "\\map1.prn",
   "PreviewInSolutionExplorer": false
 }
